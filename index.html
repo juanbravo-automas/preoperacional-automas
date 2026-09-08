@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoMás CDA - Preoperacional de Sede Interactivo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            automas: {
+              orange: '#FF671F',
+              rust: '#9D4626',
+              dark: '#242424',
+              green: '#51AD32',
+              teal: '#00C2C4',
+              darkteal: '#075D67',
+              purple: '#673278',
+              ice: '#DDEBF6',
+              lightgray: '#F8FAFC'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f4f8fb; color: #242424; }
+    .status-btn-active-OK { background-color: #51AD32 !important; color: #ffffff !important; border-color: #3f8f26 !important; }
+    .status-btn-active-NOV { background-color: #FF671F !important; color: #ffffff !important; border-color: #d94e0b !important; }
+    .status-btn-active-NA { background-color: #64748b !important; color: #ffffff !important; border-color: #475569 !important; }
+  </style>
+</head>
+<body class="min-h-full flex flex-col antialiased pb-16">
+
+  <header class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      
+      <!-- AutoMás Logo & Branding -->
+      <div class="flex items-center gap-4">
+        <a href="#" class="shrink-0 flex items-center">
+          <img 
+            src="https://raw.githubusercontent.com/juanbravo-automas/Imagenes/refs/heads/main/Logo%20automas.png" 
+            alt="Logo AutoMás" 
+            class="h-10 sm:h-12 object-contain"
+            onerror="this.onerror=null; this.src='https://placehold.co/200x60/FF671F/ffffff?text=AutoMás';"
+          />
+        </a>
+        <div class="h-10 w-px bg-slate-200 hidden sm:block"></div>
+        <div>
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider bg-automas-ice text-automas-darkteal border border-teal-200">
+            Centro Diagnóstico Automotor (CDA)
+          </span>
+          <h1 class="text-lg sm:text-xl font-bold tracking-tight text-automas-dark flex items-center gap-2">
+            Preoperacional de Sede
+          </h1>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="setAllStatus('OK')" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-automas-green hover:bg-emerald-600 text-white shadow-sm transition transform active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Todo OK
+        </button>
+
+        <button onclick="sendToGoogleSheets()" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-automas-orange hover:bg-orange-600 text-white shadow-sm transition transform active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+          Enviar a Google Sheets
+        </button>
+
+        <button onclick="toggleConfigModal()" type="button" title="Configurar conexión Google Sheets" class="inline-flex items-center gap-1 px-2.5 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition">
+          <svg class="w-4 h-4 text-automas-darkteal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </button>
+
+        <button onclick="exportToCSV()" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm transition">
+          <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          CSV / Excel
+        </button>
+
+        <button onclick="copyForExcel()" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm transition" title="Copiar tabla para pegar en Excel">
+          <svg class="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+          Copiar
+        </button>
+
+        <button onclick="resetForm()" type="button" class="inline-flex items-center gap-1 px-2 py-2 text-xs font-semibold rounded-xl bg-white hover:bg-slate-50 text-slate-500 border border-slate-200 transition" title="Reiniciar formulario">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 mt-6 w-full flex-grow">
+
+    <!-- Golden Rule Banner -->
+    <div class="mb-6 p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-amber-900 shadow-sm flex items-start gap-3">
+      <div class="shrink-0 text-automas-orange mt-0.5">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      </div>
+      <div class="text-xs sm:text-sm">
+        <strong class="font-bold uppercase tracking-wider text-automas-rust">Regla de Oro de Notificación AutoMás:</strong>
+        <p class="mt-0.5 text-amber-900">
+          Cualquier evento crítico (falla total de línea o RUNT, accidentes, visitas de entes de control) debe ser reportado de <strong>inmediato por teléfono o canal directo</strong>. Este preoperacional es la rutina de alistamiento previa a la apertura de pista.
+        </p>
+      </div>
+    </div>
+
+    <!-- Google Sheets Sync Banner Bar -->
+    <div id="sheetsSyncBar" class="mb-6 p-3.5 rounded-2xl bg-automas-ice/50 border border-teal-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2">
+        <span class="flex h-2.5 w-2.5 relative">
+          <span id="syncDotPing" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+          <span id="syncDot" class="relative inline-flex rounded-full h-2.5 w-2.5 bg-automas-teal"></span>
+        </span>
+        <span class="font-semibold text-automas-darkteal">Estado Google Sheets:</span>
+        <span id="sheetStatusText" class="text-slate-600 font-medium">Webhook listo para envío</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="toggleConfigModal()" class="text-automas-darkteal font-bold hover:underline">Configurar Webhook / Apps Script</button>
+      </div>
+    </div>
+
+    <!-- Sede & Director Metadata Form Card -->
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <!-- Sede Selection -->
+        <div>
+          <label for="sedeSelect" class="block text-xs font-bold uppercase tracking-wider text-automas-darkteal mb-1">Sede AutoMás CDA</label>
+          <select id="sedeSelect" onchange="onSedeChange()" class="w-full text-sm font-semibold text-slate-800 bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-automas-teal focus:border-automas-teal outline-none transition">
+            <option value="">-- Seleccionar Sede --</option>
+            <option value="CDA Sede Norte - Bogotá">CDA Sede Norte - Bogotá</option>
+            <option value="CDA Sede Sur - Bogotá">CDA Sede Sur - Bogotá</option>
+            <option value="CDA Sede Calle 80">CDA Sede Calle 80</option>
+            <option value="CDA Sede Cali">CDA Sede Cali</option>
+            <option value="CDA Sede Medellín">CDA Sede Medellín</option>
+            <option value="CDA Sede Bucaramanga">CDA Sede Bucaramanga</option>
+            <option value="CDA Sede Barranquilla">CDA Sede Barranquilla</option>
+            <option value="CUSTOM">+ Ingresar otra sede...</option>
+          </select>
+          <input type="text" id="customSedeInput" oninput="saveFormData()" placeholder="Escriba el nombre de la sede" class="hidden mt-2 w-full text-sm p-2 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-automas-teal outline-none">
+        </div>
+
+        <!-- Director / Responsible Inspector -->
+        <div>
+          <label for="directorInput" class="block text-xs font-bold uppercase tracking-wider text-automas-darkteal mb-1">Director / Inspector Responsable</label>
+          <input type="text" id="directorInput" oninput="saveFormData()" placeholder="Nombre completo" class="w-full text-sm font-semibold text-slate-800 bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-automas-teal focus:border-automas-teal outline-none transition">
+        </div>
+
+        <!-- Date -->
+        <div>
+          <label for="fechaInput" class="block text-xs font-bold uppercase tracking-wider text-automas-darkteal mb-1">Fecha de Inspección</label>
+          <input type="date" id="fechaInput" onchange="saveFormData()" class="w-full text-sm font-semibold text-slate-800 bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-automas-teal focus:border-automas-teal outline-none transition">
+        </div>
+
+      </div>
+
+      <!-- Progress Indicator -->
+      <div class="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Progreso de Verificación:</span>
+          <span id="progressText" class="text-xs font-extrabold text-automas-darkteal">0 / 20 ítems evaluados (0%)</span>
+        </div>
+        <div class="w-full sm:w-1/2 bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200/50">
+          <div id="progressBar" class="bg-automas-teal h-2.5 transition-all duration-300" style="width: 0%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <form id="checklistForm" class="space-y-6" onsubmit="event.preventDefault();">
+
+      <!-- BLOQUE 1 -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+        <div class="bg-automas-darkteal px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="bg-automas-teal text-automas-dark text-xs font-black px-2 py-0.5 rounded">B1</span>
+            <h2 class="text-sm font-bold text-white uppercase tracking-wider">Bloque 1: Personal y Capacidad</h2>
+          </div>
+          <button type="button" onclick="setBlockStatus(1, 'OK')" class="text-xs font-semibold bg-white/10 hover:bg-white/20 text-automas-ice border border-white/20 px-3 py-1 rounded-lg transition">
+            Marcar Bloque como OK
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-automas-darkteal text-xs font-bold uppercase border-b border-slate-200/80">
+                <th class="py-3 px-4 w-12 text-center">#</th>
+                <th class="py-3 px-4 w-64">Ítem</th>
+                <th class="py-3 px-4">Criterio de verificación</th>
+                <th class="py-3 px-4 w-40 text-center">Estado</th>
+                <th class="py-3 px-4 w-64">Observación / Novedad</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-xs sm:text-sm">
+              <tr class="hover:bg-slate-50/80 transition" id="row-1">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">1</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Plantilla de inspectores en pista</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Verificar lista contra turno mínimo programado. Faltante sin reemplazo = novedad.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(1, 'OK')" id="btn-1-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(1, 'NOV')" id="btn-1-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(1, 'NA')" id="btn-1-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-1" oninput="onObsChange(1)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition" id="row-2">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">2</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Personal de recepción y caja</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Confirmar presencia al inicio del turno y acceso habilitado a sistemas de cobro.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(2, 'OK')" id="btn-2-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(2, 'NOV')" id="btn-2-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(2, 'NA')" id="btn-2-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-2" oninput="onObsChange(2)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition" id="row-3">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">3</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Equipos de protección personal (EPP)</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Inspección visual de botas, protección auditiva y carnet visible del personal.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(3, 'OK')" id="btn-3-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(3, 'NOV')" id="btn-3-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(3, 'NA')" id="btn-3-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-3" oninput="onObsChange(3)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+        <div class="bg-automas-darkteal px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="bg-automas-teal text-automas-dark text-xs font-black px-2 py-0.5 rounded">B2</span>
+            <h2 class="text-sm font-bold text-white uppercase tracking-wider">Bloque 2: Equipos y Metrología (Pista)</h2>
+          </div>
+          <button type="button" onclick="setBlockStatus(2, 'OK')" class="text-xs font-semibold bg-white/10 hover:bg-white/20 text-automas-ice border border-white/20 px-3 py-1 rounded-lg transition">
+            Marcar Bloque como OK
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-automas-darkteal text-xs font-bold uppercase border-b border-slate-200/80">
+                <th class="py-3 px-4 w-12 text-center">#</th>
+                <th class="py-3 px-4 w-64">Ítem</th>
+                <th class="py-3 px-4">Criterio de verificación</th>
+                <th class="py-3 px-4 w-40 text-center">Estado</th>
+                <th class="py-3 px-4 w-64">Observación / Novedad</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-xs sm:text-sm">
+              <tr class="hover:bg-slate-50/80 transition" id="row-4">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">4</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Analizador de gases Otto y hermeticidad</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Ejecutar prueba de hermeticidad inicial en software. Falla repetida = novedad.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(4, 'OK')" id="btn-4-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(4, 'NOV')" id="btn-4-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(4, 'NA')" id="btn-4-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-4" oninput="onObsChange(4)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition" id="row-5">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">5</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Opacímetro para Diesel y cero óptico</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Verificar limpieza de lentes de captación y ajuste a cero sin bloqueos.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(5, 'OK')" id="btn-5-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(5, 'NOV')" id="btn-5-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(5, 'NA')" id="btn-5-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-5" oninput="onObsChange(5)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition" id="row-6">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">6</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Frenómetro y suspensión</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Inspeccionar rodillos limpios y marcha en vacío sin ruidos mecánicos anormales.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(6, 'OK')" id="btn-6-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(6, 'NOV')" id="btn-6-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(6, 'NA')" id="btn-6-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-6" oninput="onObsChange(6)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition" id="row-7">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">7</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Luxómetro y alineador al paso</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Comprobar desplazamiento suave en rieles y encendido de cámara fotométrica.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(7, 'OK')" id="btn-7-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(7, 'NOV')" id="btn-7-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(7, 'NA')" id="btn-7-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-7" oninput="onObsChange(7)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition" id="row-8">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">8</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Sonómetro, taxímetro y profundímetro</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Verificar carga de batería de portátiles y disponibilidad de acoples.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(8, 'OK')" id="btn-8-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(8, 'NOV')" id="btn-8-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(8, 'NA')" id="btn-8-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-8" oninput="onObsChange(8)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition" id="row-9">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">9</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Cilindros de gases patrón de calibración</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Revisar manómetros de gases de referencia. Presión menor a 200 PSI = novedad.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(9, 'OK')" id="btn-9-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(9, 'NOV')" id="btn-9-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(9, 'NA')" id="btn-9-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-9" oninput="onObsChange(9)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+        <div class="bg-automas-darkteal px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="bg-automas-teal text-automas-dark text-xs font-black px-2 py-0.5 rounded">B3</span>
+            <h2 class="text-sm font-bold text-white uppercase tracking-wider">Bloque 3: Sistemas y Conexión RUNT</h2>
+          </div>
+          <button type="button" onclick="setBlockStatus(3, 'OK')" class="text-xs font-semibold bg-white/10 hover:bg-white/20 text-automas-ice border border-white/20 px-3 py-1 rounded-lg transition">
+            Marcar Bloque como OK
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-automas-darkteal text-xs font-bold uppercase border-b border-slate-200/80">
+                <th class="py-3 px-4 w-12 text-center">#</th>
+                <th class="py-3 px-4 w-64">Ítem</th>
+                <th class="py-3 px-4">Criterio de verificación</th>
+                <th class="py-3 px-4 w-40 text-center">Estado</th>
+                <th class="py-3 px-4 w-64">Observación / Novedad</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-xs sm:text-sm">
+              <tr class="hover:bg-slate-50/80 transition" id="row-10">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">10</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Conexión a la plataforma RUNT</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Probar inicio de sesión y envío de consulta de PIN. Bloqueo o caída = novedad.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(10, 'OK')" id="btn-10-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(10, 'NOV')" id="btn-10-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(10, 'NA')" id="btn-10-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-10" oninput="onObsChange(10)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition" id="row-11">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">11</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Sistema de cámaras CCTV en pista</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Verificar grabación activa y encuadre correcto en todos los ángulos requeridos.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(11, 'OK')" id="btn-11-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(11, 'NOV')" id="btn-11-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(11, 'NA')" id="btn-11-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-11" oninput="onObsChange(11)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition" id="row-12">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">12</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Lector biométrico de pista</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Efectuar lectura de huella de prueba. Falla de reconocimiento = novedad.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(12, 'OK')" id="btn-12-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(12, 'NOV')" id="btn-12-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(12, 'NA')" id="btn-12-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-12" oninput="onObsChange(12)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+        <div class="bg-automas-darkteal px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="bg-automas-teal text-automas-dark text-xs font-black px-2 py-0.5 rounded">B4</span>
+            <h2 class="text-sm font-bold text-white uppercase tracking-wider">Bloque 4: Infraestructura y Entorno Seguro</h2>
+          </div>
+          <button type="button" onclick="setBlockStatus(4, 'OK')" class="text-xs font-semibold bg-white/10 hover:bg-white/20 text-automas-ice border border-white/20 px-3 py-1 rounded-lg transition">
+            Marcar Bloque como OK
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-automas-darkteal text-xs font-bold uppercase border-b border-slate-200/80">
+                <th class="py-3 px-4 w-12 text-center">#</th>
+                <th class="py-3 px-4 w-64">Ítem</th>
+                <th class="py-3 px-4">Criterio de verificación</th>
+                <th class="py-3 px-4 w-40 text-center">Estado</th>
+                <th class="py-3 px-4 w-64">Observación / Novedad</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-xs sm:text-sm">
+              <tr class="hover:bg-slate-50/80 transition" id="row-13">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">13</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Estado de fosa, elevador y tapas de cubierta</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Inspeccionar fosa seca, buena iluminación y ausencia de riesgo de caída o inestabilidad.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(13, 'OK')" id="btn-13-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(13, 'NOV')" id="btn-13-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(13, 'NA')" id="btn-13-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-13" oninput="onObsChange(13)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition" id="row-14">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">14</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Planta eléctrica y respaldo UPS</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Verificar nivel aceptable de combustible y panel de UPS sin alarmas de fallo.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(14, 'OK')" id="btn-14-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(14, 'NOV')" id="btn-14-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(14, 'NA')" id="btn-14-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-14" oninput="onObsChange(14)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition" id="row-15">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">15</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Extractores de gases en pista</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Probar encendido y succión del sistema extractor de exosto en pista.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(15, 'OK')" id="btn-15-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(15, 'NOV')" id="btn-15-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(15, 'NA')" id="btn-15-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-15" oninput="onObsChange(15)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition" id="row-16">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">16</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Extintores y pasillos de evacuación</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Verificar manómetro en zona verde y pasillos libres de obstaculización.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(16, 'OK')" id="btn-16-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(16, 'NOV')" id="btn-16-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(16, 'NA')" id="btn-16-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-16" oninput="onObsChange(16)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+        <div class="bg-automas-darkteal px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="bg-automas-teal text-automas-dark text-xs font-black px-2 py-0.5 rounded">B5</span>
+            <h2 class="text-sm font-bold text-white uppercase tracking-wider">Bloque 5: Insumos, Cierre e Imparcialidad</h2>
+          </div>
+          <button type="button" onclick="setBlockStatus(5, 'OK')" class="text-xs font-semibold bg-white/10 hover:bg-white/20 text-automas-ice border border-white/20 px-3 py-1 rounded-lg transition">
+            Marcar Bloque como OK
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-automas-darkteal text-xs font-bold uppercase border-b border-slate-200/80">
+                <th class="py-3 px-4 w-12 text-center">#</th>
+                <th class="py-3 px-4 w-64">Ítem</th>
+                <th class="py-3 px-4">Criterio de verificación</th>
+                <th class="py-3 px-4 w-40 text-center">Estado</th>
+                <th class="py-3 px-4 w-64">Observación / Novedad</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-xs sm:text-sm">
+              <tr class="hover:bg-slate-50/80 transition" id="row-17">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">17</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Inventario de stickers RTM y papel de seguridad</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Conteo físico contra libro. Stock disponible menor a 3 días = novedad.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(17, 'OK')" id="btn-17-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(17, 'NOV')" id="btn-17-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(17, 'NA')" id="btn-17-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-17" oninput="onObsChange(17)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition" id="row-18">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">18</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Impresoras de certificados RTM</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Probar impresión de hoja de prueba y verificación de tóner.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(18, 'OK')" id="btn-18-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(18, 'NOV')" id="btn-18-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(18, 'NA')" id="btn-18-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-18" oninput="onObsChange(18)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition" id="row-19">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">19</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Control de accesos e imparcialidad</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Verificar restricción de personas no autorizadas dentro de la pista e inspeccionar portones.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(19, 'OK')" id="btn-19-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(19, 'NOV')" id="btn-19-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(19, 'NA')" id="btn-19-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-19" oninput="onObsChange(19)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition" id="row-20">
+                <td class="py-3 px-4 text-center font-bold text-slate-400">20</td>
+                <td class="py-3 px-4 font-semibold text-slate-800">Seguridad del predio y portones de acceso</td>
+                <td class="py-3 px-4 text-xs text-slate-600">Revisión de cerramientos, candados y maniobrabilidad de portones de ingreso/salida.</td>
+                <td class="py-3 px-4 text-center">
+                  <div class="inline-flex rounded-lg shadow-sm">
+                    <button type="button" onclick="setStatus(20, 'OK')" id="btn-20-OK" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-l-lg transition">OK</button>
+                    <button type="button" onclick="setStatus(20, 'NOV')" id="btn-20-NOV" class="status-btn px-2.5 py-1 text-xs font-bold border-t border-b border-slate-200 hover:bg-slate-100 transition">NOV</button>
+                    <button type="button" onclick="setStatus(20, 'NA')" id="btn-20-NA" class="status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 rounded-r-lg transition">N/A</button>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <input type="text" id="obs-20" oninput="onObsChange(20)" placeholder="Describa la novedad..." class="w-full text-xs p-2 rounded-lg border border-slate-200 focus:ring-1 focus:ring-automas-teal bg-slate-50">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- Bottom Actions Bar -->
+    <div class="mt-8 p-4 bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="text-xs text-slate-500">
+        <span class="font-bold text-automas-dark">AutoMás S.A.S.</span> &bull; Sistema de Gestión de Operaciones CDA
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="sendToGoogleSheets()" type="button" class="px-5 py-2.5 text-xs font-bold rounded-xl bg-automas-orange hover:bg-orange-600 text-white shadow transition transform active:scale-95 flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+          Enviar Informe a Google Sheets
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="configModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+        <h3 class="text-base font-bold text-automas-dark flex items-center gap-2">
+          <svg class="w-5 h-5 text-automas-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Configuración Integración Google Sheets
+        </h3>
+        <button onclick="toggleConfigModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs text-slate-600">
+        <div>
+          <label for="webhookUrlInput" class="block font-bold text-slate-700 mb-1">URL de Aplicación Web (Google Apps Script Webhook):</label>
+          <input type="text" id="webhookUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full text-xs p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-automas-teal outline-none font-mono">
+          <p class="text-[11px] text-slate-400 mt-1">Pegue la URL entregada al implementar su Google Apps Script como Aplicación Web.</p>
+        </div>
+
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-700">Código Google Apps Script (Soporta Observaciones e Ítems 1-20):</span>
+            <button onclick="copyAppsScriptCode()" class="text-automas-darkteal hover:underline text-[11px] font-bold">Copiar Código</button>
+          </div>
+          <textarea id="appsScriptTextarea" readonly class="w-full h-40 p-2 font-mono text-[10px] bg-slate-900 text-slate-200 rounded-lg outline-none resize-none">
+function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data = JSON.parse(e.postData.contents);
+    
+    // Si la hoja está vacía, crear encabezados automáticos
+    if (sheet.getLastRow() === 0) {
+      var headers = ["Marca Temporal", "Fecha Inspección", "Sede", "Persona que Reporta", "Estado General", "Progreso", "Resumen Novedades y Observaciones"];
+      for (var i = 1; i <= 20; i++) {
+        headers.push("Ítem " + i + " Estado");
+        headers.push("Ítem " + i + " Observación");
+      }
+      sheet.appendRow(headers);
+    }
+    
+    var row = [
+      new Date(),
+      data.fecha || "",
+      data.sede || "",
+      data.director || "",
+      data.estado_general || "",
+      data.progreso || "",
+      data.resumen_novedades_y_observaciones || ""
+    ];
+    
+    // Agregar las respuestas de cada ítem (Estado + Observación)
+    for (var j = 1; j <= 20; j++) {
+      row.push(data["estado_" + j] || "PENDIENTE");
+      row.push(data["obs_" + j] || "");
+    }
+    
+    sheet.appendRow(row);
+    
+    return ContentService.createTextOutput(JSON.stringify({ "status": "success" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ "status": "error", "message": error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+          </textarea>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end gap-2">
+        <button onclick="saveWebhookConfig()" type="button" class="px-4 py-2 text-xs font-bold rounded-xl bg-automas-darkteal text-white hover:bg-teal-800 transition">
+          Guardar Configuración
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-5 right-5 bg-automas-darkteal text-white px-4 py-3 rounded-2xl shadow-2xl transition transform translate-y-20 opacity-0 flex items-center gap-3 text-sm font-semibold z-50 border border-teal-500/30">
+    <div id="toastIcon" class="text-automas-teal">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <span id="toastMsg">Acción completada con éxito</span>
+  </div>
+
+  <script>
+    const TOTAL_ITEMS = 20;
+    const itemNames = {
+      1: "Plantilla de inspectores en pista",
+      2: "Personal de recepción y caja",
+      3: "Equipos de protección personal (EPP)",
+      4: "Analizador de gases Otto y hermeticidad",
+      5: "Opacímetro para Diesel y cero óptico",
+      6: "Frenómetro y suspensión",
+      7: "Luxómetro y alineador al paso",
+      8: "Sonómetro, taxímetro y profundímetro",
+      9: "Cilindros de gases patrón de calibración",
+      10: "Conexión a la plataforma RUNT",
+      11: "Sistema de cámaras CCTV en pista",
+      12: "Lector biométrico de pista",
+      13: "Estado de fosa, elevador y tapas de cubierta",
+      14: "Planta eléctrica y respaldo UPS",
+      15: "Extractores de gases en pista",
+      16: "Extintores y pasillos de evacuación",
+      17: "Inventario de stickers RTM y papel de seguridad",
+      18: "Impresoras de certificados RTM",
+      19: "Control de accesos e imparcialidad",
+      20: "Seguridad del predio y portones de acceso"
+    };
+
+    const itemStates = {}; // Stores { 1: 'OK', 2: 'NOV', ... }
+    const itemObs = {};    // Stores { 1: 'Texto observacion', ... }
+
+    const blockRanges = {
+      1: [1, 3],
+      2: [4, 9],
+      3: [10, 12],
+      4: [13, 16],
+      5: [17, 20]
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set default date
+      document.getElementById('fechaInput').valueAsDate = new Date();
+      
+      // Load saved webhook URL if exists
+      const savedWebhook = localStorage.getItem('automas_webhook_url');
+      if (savedWebhook) {
+        document.getElementById('webhookUrlInput').value = savedWebhook;
+      }
+
+      // Load saved state from LocalStorage so data is never lost
+      loadFormData();
+      updateProgressBar();
+    });
+
+    function getSelectedSede() {
+      const select = document.getElementById('sedeSelect');
+      const customInput = document.getElementById('customSedeInput');
+      if (select.value === 'CUSTOM') {
+        return customInput.value.trim() || 'Sede No Especificada';
+      }
+      return select.value || 'Sede No Seleccionada';
+    }
+
+    function onSedeChange() {
+      const select = document.getElementById('sedeSelect');
+      const customInput = document.getElementById('customSedeInput');
+      if (select.value === 'CUSTOM') {
+        customInput.classList.remove('hidden');
+        customInput.focus();
+      } else {
+        customInput.classList.add('hidden');
+      }
+      saveFormData();
+    }
+
+    function onObsChange(itemId) {
+      const input = document.getElementById(`obs-${itemId}`);
+      if (input) {
+        itemObs[itemId] = input.value;
+        saveFormData();
+      }
+    }
+
+    function setStatus(itemId, status) {
+      itemStates[itemId] = status;
+
+      const btnOK = document.getElementById(`btn-${itemId}-OK`);
+      const btnNOV = document.getElementById(`btn-${itemId}-NOV`);
+      const btnNA = document.getElementById(`btn-${itemId}-NA`);
+
+      [btnOK, btnNOV, btnNA].forEach(btn => {
+        if (btn) btn.className = 'status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 transition';
+      });
+
+      if (btnOK) btnOK.classList.add('rounded-l-lg');
+      if (btnNA) btnNA.classList.add('rounded-r-lg');
+
+      const activeBtn = document.getElementById(`btn-${itemId}-${status}`);
+      if (activeBtn) {
+        activeBtn.classList.add(`status-btn-active-${status}`);
+      }
+
+      const row = document.getElementById(`row-${itemId}`);
+      if (row) {
+        if (status === 'NOV') {
+          row.className = 'bg-orange-50/80 hover:bg-orange-100/80 transition';
+        } else if (status === 'OK') {
+          row.className = 'bg-emerald-50/40 hover:bg-emerald-50 transition';
+        } else {
+          row.className = 'bg-slate-50/60 hover:bg-slate-100/60 transition';
+        }
+      }
+
+      saveFormData();
+      updateProgressBar();
+    }
+
+    function setBlockStatus(blockNum, status) {
+      const range = blockRanges[blockNum];
+      if (!range) return;
+      for (let i = range[0]; i <= range[1]; i++) {
+        setStatus(i, status);
+      }
+      showToast(`Bloque ${blockNum} marcado como ${status}`);
+    }
+
+    function setAllStatus(status) {
+      for (let i = 1; i <= TOTAL_ITEMS; i++) {
+        setStatus(i, status);
+      }
+      showToast(`Todos los ítems marcados como ${status}`);
+    }
+
+    function updateProgressBar() {
+      const answeredCount = Object.keys(itemStates).length;
+      const percentage = Math.round((answeredCount / TOTAL_ITEMS) * 100);
+
+      const pBar = document.getElementById('progressBar');
+      const pText = document.getElementById('progressText');
+
+      if (pBar) pBar.style.width = `${percentage}%`;
+      if (pText) pText.innerText = `${answeredCount} / ${TOTAL_ITEMS} ítems evaluados (${percentage}%)`;
+    }
+
+    /* LocalStorage Persistence Engine */
+    function saveFormData() {
+      const directorVal = document.getElementById('directorInput') ? document.getElementById('directorInput').value : '';
+
+      const dataToSave = {
+        sede: document.getElementById('sedeSelect').value,
+        customSede: document.getElementById('customSedeInput').value,
+        director: directorVal,
+        fecha: document.getElementById('fechaInput').value,
+        states: itemStates,
+        observations: {}
+      };
+
+      for (let i = 1; i <= TOTAL_ITEMS; i++) {
+        const obsElem = document.getElementById(`obs-${i}`);
+        if (obsElem) {
+          const val = obsElem.value;
+          dataToSave.observations[i] = val;
+          itemObs[i] = val;
+        }
+      }
+
+      localStorage.setItem('automas_preoperacional_data', JSON.stringify(dataToSave));
+    }
+
+    function loadFormData() {
+      const saved = localStorage.getItem('automas_preoperacional_data');
+      if (!saved) return;
+
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.sede) {
+          document.getElementById('sedeSelect').value = parsed.sede;
+          if (parsed.sede === 'CUSTOM') {
+            document.getElementById('customSedeInput').classList.remove('hidden');
+            document.getElementById('customSedeInput').value = parsed.customSede || '';
+          }
+        }
+        if (parsed.director !== undefined) {
+          document.getElementById('directorInput').value = parsed.director;
+        }
+        if (parsed.fecha) document.getElementById('fechaInput').value = parsed.fecha;
+
+        if (parsed.states) {
+          Object.keys(parsed.states).forEach(id => {
+            setStatus(parseInt(id), parsed.states[id]);
+          });
+        }
+
+        if (parsed.observations) {
+          Object.keys(parsed.observations).forEach(id => {
+            const val = parsed.observations[id];
+            const input = document.getElementById(`obs-${id}`);
+            if (input && val !== undefined) {
+              input.value = val;
+              itemObs[id] = val;
+            }
+          });
+        }
+      } catch (e) {
+        console.error("Error al cargar datos guardados:", e);
+      }
+    }
+
+    function resetForm() {
+      localStorage.removeItem('automas_preoperacional_data');
+      for (let i = 1; i <= TOTAL_ITEMS; i++) {
+        delete itemStates[i];
+        delete itemObs[i];
+        
+        const btnOK = document.getElementById(`btn-${i}-OK`);
+        const btnNOV = document.getElementById(`btn-${i}-NOV`);
+        const btnNA = document.getElementById(`btn-${i}-NA`);
+        const obsInput = document.getElementById(`obs-${i}`);
+        const row = document.getElementById(`row-${i}`);
+
+        [btnOK, btnNOV, btnNA].forEach(btn => {
+          if (btn) btn.className = 'status-btn px-2.5 py-1 text-xs font-bold border border-slate-200 hover:bg-slate-100 transition';
+        });
+        if (btnOK) btnOK.classList.add('rounded-l-lg');
+        if (btnNA) btnNA.classList.add('rounded-r-lg');
+
+        if (obsInput) obsInput.value = '';
+        if (row) row.className = 'hover:bg-slate-50/80 transition';
+      }
+      
+      document.getElementById('sedeSelect').value = '';
+      document.getElementById('customSedeInput').classList.add('hidden');
+      document.getElementById('customSedeInput').value = '';
+      document.getElementById('directorInput').value = '';
+      document.getElementById('fechaInput').valueAsDate = new Date();
+
+      updateProgressBar();
+      showToast('Formulario e historial local reiniciados');
+    }
+
+    /* Google Sheets Integration Logic */
+    async function sendToGoogleSheets() {
+      const webhookUrl = localStorage.getItem('automas_webhook_url') || document.getElementById('webhookUrlInput').value.trim();
+
+      if (!webhookUrl) {
+        showToast("Por favor configure la URL del Webhook en 'Configurar Webhook'", true);
+        toggleConfigModal();
+        return;
+      }
+
+      const sede = getSelectedSede();
+      const director = document.getElementById('directorInput').value.trim() || 'No especificado';
+      const fecha = document.getElementById('fechaInput').value || new Date().toISOString().split('T')[0];
+
+      // Build items summary and consolidate observations
+      let noveltiesAndObsList = [];
+      let totalNOV = 0;
+
+      const itemsPayload = {};
+      const itemsData = [];
+
+      for (let i = 1; i <= TOTAL_ITEMS; i++) {
+        const estado = itemStates[i] || "PENDIENTE";
+        const obsElem = document.getElementById(`obs-${i}`);
+        const obsText = obsElem ? obsElem.value.trim() : (itemObs[i] || "");
+        
+        itemsPayload[`estado_${i}`] = estado;
+        itemsPayload[`obs_${i}`] = obsText;
+
+        if (estado === 'NOV') totalNOV++;
+
+        if (obsText !== "" || estado === 'NOV') {
+          noveltiesAndObsList.push(`Ítem ${i} (${itemNames[i]}): [${estado}] - ${obsText || 'Sin detalle de observación'}`);
+        }
+
+        itemsData.push({
+          id: i,
+          nombre: itemNames[i],
+          estado: estado,
+          observacion: obsText
+        });
+      }
+
+      const estadoGeneral = totalNOV > 0 ? `CON NOVEDADES (${totalNOV})` : "OK CONFORME";
+      const resumenObsText = noveltiesAndObsList.length > 0 
+        ? noveltiesAndObsList.join(" | ") 
+        : "Sin observaciones ni novedades reportadas.";
+
+      const payload = {
+        fecha: fecha,
+        sede: sede,
+        director: director,
+        estado_general: estadoGeneral,
+        progreso: `${Object.keys(itemStates).length}/${TOTAL_ITEMS}`,
+        resumen_novedades_y_observaciones: resumenObsText,
+        itemsData: itemsData,
+        ...itemsPayload
+      };
+
+      const syncDot = document.getElementById('syncDot');
+      const syncDotPing = document.getElementById('syncDotPing');
+      const sheetStatusText = document.getElementById('sheetStatusText');
+
+      if (sheetStatusText) sheetStatusText.innerText = "Enviando datos a Google Sheets...";
+
+      try {
+        // Mode no-cors to accommodate Google Apps Script redirect standards
+        await fetch(webhookUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (sheetStatusText) sheetStatusText.innerText = "¡Enviado a Google Sheets!";
+        if (syncDot) syncDot.className = "relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500";
+        if (syncDotPing) syncDotPing.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75";
+
+        showToast("¡Informe enviado exitosamente a Google Sheets!");
+      } catch (err) {
+        console.error("Error enviando a Google Sheets:", err);
+        if (sheetStatusText) sheetStatusText.innerText = "Error en el envío";
+        if (syncDot) syncDot.className = "relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500";
+        showToast("No se pudo enviar. Verifique la URL de Webhook y su conexión", true);
+      }
+    }
+
+    /* Export Functions */
+    function exportToCSV() {
+      const sede = getSelectedSede();
+      const director = document.getElementById('directorInput').value.trim() || 'No especificado';
+      const fecha = document.getElementById('fechaInput').value || new Date().toISOString().split('T')[0];
+
+      let csvContent = "\uFEFF"; // UTF-8 BOM for Excel compatibility
+      csvContent += "AUTOMÁS CDA - PREOPERACIONAL DE SEDE (20 ÍTEMS)\n";
+      csvContent += `Fecha;${fecha}\n`;
+      csvContent += `Sede;${sede}\n`;
+      csvContent += `Director/Inspector;${director}\n\n`;
+
+      csvContent += "Item_ID;Item_Nombre;Estado;Observacion_Novedad\n";
+
+      for (let i = 1; i <= TOTAL_ITEMS; i++) {
+        const estado = itemStates[i] || "SIN EVALUAR";
+        const obsInput = document.getElementById(`obs-${i}`);
+        const obs = obsInput ? obsInput.value.replace(/;/g, ',').trim() : "";
+        const nombreItem = itemNames[i] ? itemNames[i].replace(/;/g, ',') : `Item #${i}`;
+
+        csvContent += `${i};"${nombreItem}";${estado};"${obs}"\n`;
+      }
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const safeSede = sede.replace(/[^a-zA-Z0-9]/g, "_");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Preoperacional_AutoMas_${safeSede}_${fecha}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast("¡Archivo CSV generado con observaciones!");
+    }
+
+    function copyForExcel() {
+      const sede = getSelectedSede();
+      const director = document.getElementById('directorInput').value.trim() || 'No especificado';
+      const fecha = document.getElementById('fechaInput').value || new Date().toISOString().split('T')[0];
+
+      let textData = `FECHA\tSEDE\tDIRECTOR\tITEM_ID\tITEM_NOMBRE\tESTADO\tOBSERVACION\n`;
+
+      for (let i = 1; i <= TOTAL_ITEMS; i++) {
+        const estado = itemStates[i] || "PENDIENTE";
+        const obsInput = document.getElementById(`obs-${i}`);
+        const obs = obsInput ? obsInput.value.replace(/\t/g, ' ').trim() : "";
+        const nombreItem = itemNames[i] || `Item #${i}`;
+
+        textData += `${fecha}\t${sede}\t${director}\t${i}\t${nombreItem}\t${estado}\t${obs}\n`;
+      }
+
+      const tempTextArea = document.createElement("textarea");
+      tempTextArea.value = textData;
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+      try {
+        document.execCommand('copy');
+        showToast("¡Datos copiados! Pegue directamente en Excel o Sheets (Ctrl+V)");
+      } catch (err) {
+        showToast("No se pudo copiar automáticamente. Use descarga CSV", true);
+      }
+      document.body.removeChild(tempTextArea);
+    }
+
+    /* Modal & UI Helpers */
+    function toggleConfigModal() {
+      const modal = document.getElementById('configModal');
+      if (modal) {
+        modal.classList.toggle('hidden');
+      }
+    }
+
+    function saveWebhookConfig() {
+      const url = document.getElementById('webhookUrlInput').value.trim();
+      localStorage.setItem('automas_webhook_url', url);
+      showToast("Configuración de Webhook guardada");
+      toggleConfigModal();
+    }
+
+    function copyAppsScriptCode() {
+      const textarea = document.getElementById('appsScriptTextarea');
+      textarea.select();
+      document.execCommand('copy');
+      showToast("Código de Apps Script copiado al portapapeles");
+    }
+
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      const toastIcon = document.getElementById('toastIcon');
+      if (!toast || !toastMsg) return;
+
+      toastMsg.innerText = message;
+
+      if (isError) {
+        toast.className = 'fixed bottom-5 right-5 bg-rose-700 text-white px-4 py-3 rounded-2xl shadow-2xl transition transform translate-y-0 opacity-100 flex items-center gap-3 text-sm font-semibold z-50 border border-rose-500/30';
+      } else {
+        toast.className = 'fixed bottom-5 right-5 bg-automas-darkteal text-white px-4 py-3 rounded-2xl shadow-2xl transition transform translate-y-0 opacity-100 flex items-center gap-3 text-sm font-semibold z-50 border border-teal-500/30';
+      }
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
