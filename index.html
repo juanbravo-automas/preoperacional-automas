@@ -36,9 +36,9 @@
   </script>
   <style>
     body { font-family: 'Inter', sans-serif; background-color: #f4f8fb; color: #242424; }
-    .status-btn-active-OK { background-color: #51AD32 !important; color: #ffffff !important; border-color: #3f8f26 !important; }
-    .status-btn-active-NOV { background-color: #dc2626 !important; color: #ffffff !important; border-color: #b91c1c !important; }
-    .status-btn-active-NA { background-color: #64748b !important; color: #ffffff !important; border-color: #475569 !important; }
+    .status-btn-active-OK { background-color: #15803D !important; color: #ffffff !important; border-color: #0B5A2A !important; box-shadow: 0 0 0 2px rgba(21,128,61,.35) !important; }
+    .status-btn-active-NOV { background-color: #C1121F !important; color: #ffffff !important; border-color: #7F0C15 !important; box-shadow: 0 0 0 2px rgba(193,18,31,.35) !important; }
+    .status-btn-active-NA { background-color: #475569 !important; color: #ffffff !important; border-color: #1E293B !important; box-shadow: 0 0 0 2px rgba(71,85,105,.30) !important; }
 
     /* Impresión: oculta controles y evita cortes dentro de cada bloque */
     @media print {
@@ -85,9 +85,6 @@
           <span id="btnSendTopLabel">Enviar a Google Sheets</span>
         </button>
 
-        <button id="btnConfig" type="button" title="Configurar conexión Google Sheets" class="inline-flex items-center gap-1 px-2.5 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition">
-          <svg class="w-4 h-4 text-automas-darkteal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        </button>
 
         <button id="btnReset" type="button" class="inline-flex items-center gap-1 px-2 py-2 text-xs font-semibold rounded-xl bg-white hover:bg-slate-50 text-slate-500 border border-slate-200 transition" title="Reiniciar formulario">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
@@ -111,9 +108,6 @@
           <span class="font-bold text-automas-rust">⚠ <span id="outboxCount">0</span> envío(s) en bandeja de salida</span>
           <button id="btnRetryOutbox" type="button" class="font-bold text-automas-darkteal hover:underline">Reintentar ahora</button>
         </span>
-      </div>
-      <div class="flex items-center gap-2">
-        <button id="btnConfig2" type="button" class="text-automas-darkteal font-bold hover:underline">Configurar Webhook / Apps Script</button>
       </div>
     </div>
 
@@ -202,109 +196,6 @@
 
   </main>
 
-  <!-- Config Modal -->
-  <div id="configModal" class="modal-overlay hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="configModalTitle">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto border border-slate-200">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-        <h3 id="configModalTitle" class="text-base font-bold text-automas-dark flex items-center gap-2">
-          <svg class="w-5 h-5 text-automas-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          Configuración Integración Google Sheets
-        </h3>
-        <button type="button" data-close-modal class="text-slate-400 hover:text-slate-600 p-1" title="Cerrar">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      </div>
-
-      <div class="space-y-4 text-xs text-slate-600">
-        <div>
-          <label for="webhookUrlInput" class="block font-bold text-slate-700 mb-1">URL de Aplicación Web (Google Apps Script Webhook):</label>
-          <input type="url" id="webhookUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full text-xs p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-automas-teal outline-none font-mono">
-          <p class="text-[11px] text-slate-400 mt-1">Deje vacío para usar la URL por defecto incluida en el archivo.</p>
-        </div>
-
-        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-slate-700">Código Google Apps Script (con token de seguridad y anti-duplicados):</span>
-            <button id="btnCopyAppsScript" type="button" class="text-automas-darkteal hover:underline text-[11px] font-bold">Copiar Código</button>
-          </div>
-          <textarea id="appsScriptTextarea" readonly class="w-full h-56 p-2 font-mono text-[10px] bg-slate-900 text-slate-200 rounded-lg outline-none resize-none">
-function doPost(e) {
-  var HOJA = 'Preoperacionales';
-  var TOKEN = 'AUTOMAS-2026-CDA'; // Debe coincidir con WEBHOOK_TOKEN del HTML
-  try {
-    var data = JSON.parse(e.postData.contents);
-
-    // Rechaza envíos sin el token compartido
-    if (data.token !== TOKEN) {
-      return _json({ status: 'error', message: 'Token inválido' });
-    }
-
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getSheetByName(HOJA) || ss.insertSheet(HOJA);
-
-    var items = data.itemsData || [];
-
-    // Encabezados automáticos solo si la hoja está vacía (se arman según los ítems recibidos)
-    if (sheet.getLastRow() === 0) {
-      var headers = ['ID Envío', 'Marca Temporal', 'Fecha Inspección', 'Sede', 'Director', 'Estado General', 'Progreso', 'Resumen Novedades y Observaciones'];
-      for (var i = 0; i < items.length; i++) {
-        headers.push('Ítem ' + items[i].id + ' - ' + items[i].nombre + ' [Estado]');
-        headers.push('Ítem ' + items[i].id + ' - ' + items[i].nombre + ' [Observación]');
-      }
-      sheet.appendRow(headers);
-      sheet.setFrozenRows(1);
-    }
-
-    // Anti-duplicados: ignora si este ID de envío ya fue registrado
-    var idEnvio = data.envio_id || '';
-    if (idEnvio && sheet.getLastRow() > 1) {
-      var ids = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues();
-      for (var r = 0; r < ids.length; r++) {
-        if (ids[r][0] === idEnvio) {
-          return _json({ status: 'ok', message: 'Duplicado ignorado' });
-        }
-      }
-    }
-
-    var row = [
-      idEnvio,
-      new Date(),
-      data.fecha || '',
-      data.sede || '',
-      data.director || '',
-      data.estado_general || '',
-      data.progreso || '',
-      data.resumen_novedades_y_observaciones || ''
-    ];
-    for (var j = 0; j < items.length; j++) {
-      row.push(items[j].estado || 'PENDIENTE');
-      row.push(items[j].observacion || '');
-    }
-    sheet.appendRow(row);
-
-    return _json({ status: 'ok' });
-  } catch (error) {
-    return _json({ status: 'error', message: error.toString() });
-  }
-}
-
-function _json(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-          </textarea>
-          <p class="text-[11px] text-slate-400">La hoja de destino es <b>Preoperacionales</b> (se crea sola). Si cambia el token en el HTML, cámbielo también en el script.</p>
-        </div>
-      </div>
-
-      <div class="mt-6 flex justify-end gap-2">
-        <button id="btnSaveWebhook" type="button" class="px-4 py-2 text-xs font-bold rounded-xl bg-automas-darkteal text-white hover:bg-teal-800 transition">
-          Guardar Configuración
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- Notification Toast -->
   <div id="toast" role="status" aria-live="polite" class="fixed bottom-5 right-5 bg-automas-darkteal text-white px-4 py-3 rounded-2xl shadow-2xl transition transform translate-y-20 opacity-0 flex items-center gap-3 text-sm font-semibold z-50 border border-teal-500/30 max-w-sm">
     <div id="toastIcon" class="shrink-0 text-automas-teal">
@@ -329,7 +220,6 @@ function _json(obj) {
 
     const LS_KEYS = {
       form: 'automas_preoperacional_data',
-      webhook: 'automas_webhook_url',
       outbox: 'automas_outbox',
       historial: 'automas_historial'
     };
@@ -403,30 +293,6 @@ function _json(obj) {
       return (crypto && crypto.randomUUID)
         ? crypto.randomUUID()
         : 'env-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10);
-    }
-
-    // Portapapeles moderno con fallback legado
-    async function copyText(text) {
-      try {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(text);
-          return true;
-        }
-      } catch (e) { /* sigue al fallback */ }
-      try {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        const ok = document.execCommand('copy');
-        document.body.removeChild(ta);
-        return ok;
-      } catch (e) {
-        return false;
-      }
     }
 
     /* ============================================================
@@ -504,9 +370,9 @@ function _json(obj) {
 
       const row = byId(`row-${itemId}`);
       if (row) {
-        row.className = status === 'NOV' ? 'bg-red-50/80 hover:bg-red-100/80 transition'
-          : status === 'OK' ? 'bg-emerald-50/40 hover:bg-emerald-50 transition'
-          : status === 'NA' ? 'bg-slate-50/60 hover:bg-slate-100/60 transition'
+        row.className = status === 'NOV' ? 'bg-red-100 hover:bg-red-200/70 transition'
+          : status === 'OK' ? 'bg-emerald-100/80 hover:bg-emerald-100 transition'
+          : status === 'NA' ? 'bg-slate-100/80 hover:bg-slate-200/70 transition'
           : ROW_BASE;
         row.dataset.state = status || '';
       }
@@ -644,7 +510,7 @@ function _json(obj) {
        GOOGLE SHEETS
     ============================================================ */
     function getWebhookUrl() {
-      return storage.get(LS_KEYS.webhook) || FIXED_WEBHOOK_URL;
+      return FIXED_WEBHOOK_URL; // fija e inmodificable desde la interfaz
     }
 
     function buildPayload(sede, director) {
@@ -859,47 +725,6 @@ function _json(obj) {
     }
 
     /* ============================================================
-       MODALES (apertura, cierre con Esc/clic fuera, foco)
-    ============================================================ */
-    const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-    let lastFocusedEl = null;
-
-    function openModal(overlay) {
-      lastFocusedEl = document.activeElement;
-      overlay.classList.remove('hidden');
-      const first = overlay.querySelector(FOCUSABLE);
-      if (first) first.focus();
-    }
-
-    function closeModal(overlay) {
-      overlay.classList.add('hidden');
-      if (lastFocusedEl && document.contains(lastFocusedEl)) lastFocusedEl.focus();
-      lastFocusedEl = null;
-    }
-
-    document.addEventListener('keydown', (e) => {
-      const open = document.querySelector('.modal-overlay:not(.hidden)');
-      if (!open) return;
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        closeModal(open);
-      } else if (e.key === 'Tab') {
-        const focusables = Array.from(open.querySelectorAll(FOCUSABLE))
-          .filter(el => !el.disabled && el.offsetParent !== null);
-        if (!focusables.length) return;
-        const first = focusables[0];
-        const last = focusables[focusables.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
-    });
-
-    /* ============================================================
        TOAST
     ============================================================ */
     const ICON_CHECK = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
@@ -955,8 +780,6 @@ function _json(obj) {
       byId('btnSendTop').addEventListener('click', sendToGoogleSheets);
       byId('btnSendBottom').addEventListener('click', sendToGoogleSheets);
       byId('btnReset').addEventListener('click', resetForm);
-      byId('btnConfig').addEventListener('click', () => openModal(byId('configModal')));
-      byId('btnConfig2').addEventListener('click', () => openModal(byId('configModal')));
 
       // Sede personalizada
       byId('sedeSelect').addEventListener('change', () => {
@@ -976,36 +799,6 @@ function _json(obj) {
       byId('fechaInput').addEventListener('change', saveFormData);
       byId('customSedeInput').addEventListener('input', saveFormData);
 
-      // Config modal
-      byId('btnSaveWebhook').addEventListener('click', () => {
-        const url = byId('webhookUrlInput').value.trim();
-        if (!url) {
-          storage.remove(LS_KEYS.webhook);
-          showToast('Se restaurará la URL por defecto incluida en el archivo');
-        } else if (!/^https:\/\/script\.google(usercontent)?\.com\//.test(url)) {
-          showToast('La URL no parece ser de Google Apps Script (script.google.com). Se guardó de todas formas.', true);
-          storage.set(LS_KEYS.webhook, url);
-        } else {
-          storage.set(LS_KEYS.webhook, url);
-          showToast('Configuración de Webhook guardada');
-        }
-        closeModal(byId('configModal'));
-      });
-      byId('btnCopyAppsScript').addEventListener('click', async () => {
-        const ok = await copyText(byId('appsScriptTextarea').value.trim());
-        showToast(ok ? 'Código de Apps Script copiado al portapapeles' : 'No se pudo copiar el código', !ok);
-      });
-
-      // Cierre de modales: botón X / clic en el fondo
-      document.querySelectorAll('.modal-overlay').forEach(overlay => {
-        overlay.querySelectorAll('[data-close-modal]').forEach(btn => {
-          btn.addEventListener('click', () => closeModal(overlay));
-        });
-        overlay.addEventListener('mousedown', (e) => {
-          if (e.target === overlay) closeModal(overlay);
-        });
-      });
-
       // Bandeja de salida
       byId('btnRetryOutbox').addEventListener('click', retryOutbox);
       window.addEventListener('online', () => retryOutbox());
@@ -1019,7 +812,6 @@ function _json(obj) {
       bindEvents();
 
       byId('fechaInput').value = todayLocalISO(); // fecha local real, no UTC
-      byId('webhookUrlInput').value = storage.get(LS_KEYS.webhook) || FIXED_WEBHOOK_URL;
 
       loadFormData();
       updateProgressBar();
