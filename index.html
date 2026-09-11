@@ -464,7 +464,8 @@
         if (parsed.states) {
           Object.keys(parsed.states).forEach(id => {
             const st = parsed.states[id];
-            if (['OK', 'NOV', 'NA'].includes(st)) {
+            // Ignora estados de ítems que ya no existen en la versión actual del formulario
+            if (['OK', 'NOV', 'NA'].includes(st) && ITEMS.some(it => it.id === parseInt(id, 10))) {
               itemStates[id] = st;
               paintItemState(parseInt(id, 10), st);
             }
